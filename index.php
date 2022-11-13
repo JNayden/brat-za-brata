@@ -1,3 +1,9 @@
+<?php
+    $con = mysqli_connect("localhost", "root", "", "db_php_task");
+    if (!$con) {
+        header("Location: create.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,18 +30,18 @@
         <form class="form" action="" method="GET">
             <select name="sort_condition" class="form-control">
                 <option value="">---Select Option ----</option>
-                <option value="a-z"                                                                                                          <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "a-z") {
-                                                                                                              echo "selected";
-                                                                                                          }?>> A-Z(Ascending Order)</option>
-                <option value="z-a"                                                                                                          <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "z-a") {
-                                                                                                              echo "selected";
-                                                                                                          }?>> Z-A(Descending Order)</option>
-                <option value="byDateASC"                                                                                                                            <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "byDateASC") {
-                                                                                                                                echo "selected";
-                                                                                                                            }?>> A-Z(Ascending Order by Date)</option>
-                <option value="byDateDESC"                                                                                                                               <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "byDateDESC") {
-                                                                                                                                   echo "selected";
-                                                                                                                               }?>> Z-A(Descending Order by Date)</option>
+                <option value="a-z"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "a-z") {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "selected";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }?>> A-Z(Ascending Order)</option>
+                <option value="z-a"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "z-a") {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                echo "selected";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            }?>> Z-A(Descending Order)</option>
+                <option value="byDateASC"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "byDateASC") {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      echo "selected";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  }?>> A-Z(Ascending Order by Date)</option>
+                <option value="byDateDESC"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           <?php if (isset($_GET['sort_condition']) && $_GET['sort_condition'] == "byDateDESC") {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               echo "selected";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           }?>> Z-A(Descending Order by Date)</option>
             </select>
             <button type="submit" class="input-group-text btn btn-primary" id="basic-addon2">
                 Sort
@@ -55,38 +61,50 @@
 
             <tbody>
                 <?php
-                    // sorting function-a da testvam
-                    // predpolagam s proverki za po data ili ime
-                    // da zakomentarq do selecrta coda
-
                     $con = mysqli_connect("localhost", "root", "", "db_php_task");
                     if (!$con) {
                         header("Location: create.php");
                     }
 
-                    $sort_option = "";
-                    $sort_option_name = "name";
+                    $query = "SELECT * FROM product";
+                    $query_run = mysqli_query($con, $query);
+
+                    //$sort_option = "";
+                    // $sort_option_name = "name";
+                    $array = array();
+
+                    while ($row = mysqli_fetch_array($query_run)) {
+                        $array[] = $row;
+                    }
                     if (isset($_GET['sort_condition'])) {
                         if ($_GET['sort_condition'] == "a-z") {
-                            $sort_option_name = "name";
-                            $sort_option = "ASC";
+                            //$sort_option_name = "name";
+                            //$sort_option = "ASC";
+                            usort($array, build_sorter_name_A('name'));
                         } elseif ($_GET['sort_condition'] == "z-a") {
-                            $sort_option_name = "name";
-                            $sort_option = "DESC";
+                            //$sort_option_name = "name";
+                            //$sort_option = "DESC";
+                            usort($array, build_sorter_name_D('name'));
                         } elseif ($_GET['sort_condition'] == "byDateASC") {
-                            $sort_option_name = "date";
-                            $sort_option = "ASC";
+                            //$sort_option_name = "date";
+                            //$sort_option = "ASC";
+                            usort($array, build_sorter_date_A('date'));
                         } elseif ($_GET['sort_condition'] == "byDateDESC") {
-                            $sort_option_name = "date";
-                            $sort_option = "DESC";
+                            //$sort_option_name = "date";
+                            //$sort_option = "DESC";
+                            usort($array, build_sorter_date_D('date'));
+                        } elseif ($_GET['sort_condition'] == "") {
+                            //$sort_option_name = "date";
+                            //$sort_option = "DESC";
+                            usort($array, build_sorter_name_A('name'));
                         }
                     }
 
-                    $query = "SELECT * FROM product ORDER BY  $sort_option_name $sort_option";
-                    $query_run = mysqli_query($con, $query);
+                    // $query = "SELECT * FROM product ORDER BY  $sort_option_name $sort_option";
+                    //$query_run = mysqli_query($con, $query);
 
-                    if (mysqli_num_rows($query_run) > 0) {
-                        foreach ($query_run as $row_in_DB) {
+                    if (sizeof($array) > 0) { //mysqli_num_rows($query_run) > 0) {
+                        foreach ($array as $row_in_DB) { //$query_run as $row_in_DB) {
                         ?>
                         <tr>
                             <td><?php echo $row_in_DB['name']; ?></td>
@@ -112,6 +130,35 @@
                 <?php
 
                     }
+
+                    function build_sorter_date_A($key)
+                    {
+                        return function ($a, $b) use ($key) {
+                            return strnatcmp($a[$key], $b[$key]);
+                        };
+                    }
+
+                    function build_sorter_date_D($key)
+                    {
+                        return function ($a, $b) use ($key) {
+                            return strnatcmp($b[$key], $a[$key]);
+                        };
+                    }
+
+                    function build_sorter_name_A($key)
+                    {
+                        return function ($a, $b) use ($key) {
+                            return strnatcmp($a[$key], $b[$key]);
+                        };
+                    }
+
+                    function build_sorter_name_D($key)
+                    {
+                        return function ($a, $b) use ($key) {
+                            return strnatcmp($b[$key], $a[$key]);
+                        };
+                    }
+
                 ?>
             </tbody>
         </table>
